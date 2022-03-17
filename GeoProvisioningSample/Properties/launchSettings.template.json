@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "Hub": {
+      "commandName": "Project"
+    },
+    "DPS": {
+      "commandName": "Project",
+      "sqlDebugging": false
+    }
+  }
+}

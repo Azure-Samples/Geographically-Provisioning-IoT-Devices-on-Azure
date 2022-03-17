@@ -17,16 +17,18 @@ The corresponding MS Tech Community blog that fully explains this architecture c
 
 
 ## Demo
-
-A demo app is included to show how to use the project.
-
 To run the demo, follow these steps:
 
-(Add steps to start up the demo)
-
-1.
-2.
-3.
+1. Obtain your Azure Maps account [Primary Key](https://docs.microsoft.com/en-us/azure/azure-maps/how-to-manage-authentication#view-authentication-details)
+    - You can find the value of this key in the Azure Portal under the Authentication blade of your Azure Maps account or by using the [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/maps?view=azure-cli-latest) script below:
+        ```Shell
+        az maps account keys list -n "mapsAccountName" -g "resourceGroupName" -o tsv --query primaryKey
+        ```
+2. Update the subscriptionKey variable's value in the run.csx file, under the Azure Function Code folder, with the Primary Key value from step 1.
+3. From the Azure portal, create an [HTTP Trigger function](https://docs.microsoft.com/azure/azure-functions/functions-create-function-app-portal#create-function) under your Azure Function App. 
+4. Replace the HTTP Trigger function's code with the code in the run.csx file.
+5. Create an Individual Enrollment with a [Custom Allocation Policy](https://docs.microsoft.com/azure/iot-dps/tutorial-custom-allocation-policies?tabs=azure-cli#create-the-enrollment) that points to your Azure Function App and the HTTP Trigger function from step 4.
+6. 
 
 ## Resources
 
