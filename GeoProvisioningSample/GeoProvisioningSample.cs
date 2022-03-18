@@ -1,5 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// This sample is based on the C# Azure IoT Samples Thermostat project at https://github.com/Azure-Samples/azure-iot-samples-csharp/tree/main/iot-hub/Samples/device/PnpDeviceSamples/Thermostat
+
 
 using Microsoft.Azure.Devices.Client;
 using Microsoft.Azure.Devices.Shared;
@@ -14,18 +16,9 @@ using System.Threading.Tasks;
 
 namespace GeoProvisioningSample.Sample
 {
-    internal enum StatusCode
-    {
-        Completed = 200,
-        InProgress = 202,
-        NotFound = 404,
-        BadRequest = 400
-    }
 
     public class GeoProvisioningSample
     {
-        private readonly Random _random = new Random();
-
         private readonly DeviceClient _deviceClient;
         private readonly ILogger _logger;
 

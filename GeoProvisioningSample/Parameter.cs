@@ -1,5 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// This sample is based on the C# Azure IoT Samples Thermostat project at https://github.com/Azure-Samples/azure-iot-samples-csharp/tree/main/iot-hub/Samples/device/PnpDeviceSamples/Thermostat
+
 
 using CommandLine;
 using Microsoft.Extensions.Logging;
@@ -16,7 +18,8 @@ namespace GeoProvisioningSample.Sample
         [Option(
             'e',
             "DpsEndpoint",
-            Required = true,
+            Default = "global.azure-devices-provisioning.net",
+            Required = false,
             HelpText = "The DPS endpoint to use during device provisioning.")]
         public string DpsEndpoint { get; set; }
 
@@ -40,6 +43,13 @@ namespace GeoProvisioningSample.Sample
             Required = true,
             HelpText = "The device symmetric key to use during device provisioning.")]
         public string DeviceSymmetricKey { get; set; }
+
+        [Option(
+            'p',
+            "IPAddress",
+            Required = true,
+            HelpText = "The device's public IPv4 or IPv6 address.")]
+        public string PublicIpAddress { get; set; }
 
         public bool Validate(ILogger logger)
         {

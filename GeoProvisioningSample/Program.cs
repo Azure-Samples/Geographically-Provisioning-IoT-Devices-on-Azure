@@ -16,9 +16,6 @@ namespace GeoProvisioningSample.Sample
 {
     public class Program
     {
-        // Update this value with either your public IPv4 or IPv6 address
-        private const string publicIpAddress = "";
-
         private static ILogger s_logger;
 
         public static async Task Main(string[] args)
@@ -41,26 +38,15 @@ namespace GeoProvisioningSample.Sample
                 throw new ArgumentException("Required parameters are not set. Please recheck required variables by using \"--help\"");
             }
 
-
-
-            s_logger.LogInformation("Press Control+C to quit the sample.");
-            Console.CancelKeyPress += (sender, eventArgs) =>
-            {
-                eventArgs.Cancel = true;
-                s_logger.LogInformation("Sample execution cancellation requested; will exit.");
-            };
-
-            s_logger.LogDebug($"Set up the device client.");
+            s_logger.LogDebug($"Setting up the device client.");
             using DeviceClient deviceClient = await SetupDeviceClientAsync(parameters);
 
-            // PerformOperationsAsync is designed to run until cancellation has been explicitly requested, either through
-            // cancellation token expiration or by Console.CancelKeyPress.
-            // As a result, by the time the control reaches the call to close the device client, the cancellation token source would
-            // have already had cancellation requested.
-            // Hence, if you want to pass a cancellation token to any subsequent calls, a new token needs to be generated.
-            // For device client APIs, you can also call them without a cancellation token, which will set a default
-            // cancellation timeout of 4 minutes: https://github.com/Azure/azure-iot-sdk-csharp/blob/64f6e9f24371bc40ab3ec7a8b8accbfb537f0fe1/iothub/device/src/InternalClient.cs#L1922
-            await deviceClient.CloseAsync();
+            if(deviceClient != null){
+
+                await deviceClient.CloseAsync();
+
+            }
+
         }
 
         private static ILogger InitializeConsoleDebugLogger()
@@ -82,8 +68,23 @@ namespace GeoProvisioningSample.Sample
         {
             DeviceClient deviceClient;
             s_logger.LogDebug($"Initializing via DPS");
+
             DeviceRegistrationResult dpsRegistrationResult = await ProvisionDeviceAsync(parameters);
+
+            if(dpsRegistrationResult.ErrorCode != 0){
+
+                s_logger.LogDebug($"Failed to provision device. DPS Error code: {dpsRegistrationResult.ErrorCode}");
+                s_logger.LogDebug($"DPS Error message: {dpsRegistrationResult.ErrorMessage}");
+                return null;
+
+            }
+
+            
+
             var authMethod = new DeviceAuthenticationWithRegistrySymmetricKey(dpsRegistrationResult.DeviceId, parameters.DeviceSymmetricKey);
+
+            s_logger.LogDebug($"Assigned Hub found: {dpsRegistrationResult.AssignedHub}");
+
             deviceClient = DeviceClient.Create(dpsRegistrationResult.AssignedHub, authMethod, TransportType.Mqtt);
 
 
@@ -100,7 +101,7 @@ namespace GeoProvisioningSample.Sample
 
             var ipAddressPayload = new ProvisioningRegistrationAdditionalData
             {
-                JsonData = $"{{ \"IpV4\": \"{publicIpAddress}\" }}",
+                JsonData = $"{{ \"IpV4\": \"{parameters.PublicIpAddress}\" }}",
             };
             return await pdc.RegisterAsync(ipAddressPayload);
         }

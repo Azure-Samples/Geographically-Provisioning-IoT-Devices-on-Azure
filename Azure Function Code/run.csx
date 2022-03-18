@@ -51,14 +51,16 @@ public static async Task<IActionResult> Run(HttpRequest req, ILogger log)
 
     if (regId == null)
     {
+        obj.iotHubHostName = null;
         message = "Registration ID not provided for the device.";
         log.LogInformation("Registration ID : NULL");
         fail = true;
     }
-    else if (countryCode == null)
+    else if (countryCode == null || countryCode != "US")
     {
-        message = "IP address of device is not correct";
-        log.LogInformation($"Country Code: {countryCode}");
+        obj.iotHubHostName = null;
+        message = "IP address of device is not from US";
+        log.LogInformation($"Country Code Not US: {countryCode}");
         fail = true;
     }
 
